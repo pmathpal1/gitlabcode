@@ -1,0 +1,28 @@
+image:
+  name: hashicorp/terraform:light
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+before_script:
+  - export AWS_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
+  - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  - export AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+
+stages:
+  - validate
+  - plan
+  - apply
+
+validate:
+  stage: validate
+  script:
+    - uname -a
+    - uptime
+    - date
+    - cat /etc/os-release
+    - terraform init
+    - terraform validate
+    - terraform plan -var-file=values.tfvars
+    - terraform apply -var-file=values.tfvars -auto-approve
+    - terraform destroy -var-file=values.tfvars -auto-approve
